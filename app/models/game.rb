@@ -6,4 +6,5 @@ class Game
   def self.get_current
     HTTParty.get(CURRENT_GAMES_URL)
   end
+
 end
