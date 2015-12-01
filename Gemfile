@@ -17,8 +17,12 @@ gem 'coffee-rails', '~> 4.0.0'
 #testing
 gem 'pry'
 
+gem 'devise'
+
 #calendar integration
-gem 'google_calendar'
+gem 'google-api-client', :require => 'google/api_client'
+gem 'omniauth'
+gem 'omniauth-google-oauth2'
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'

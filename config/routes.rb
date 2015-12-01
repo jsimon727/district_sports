@@ -1,3 +1,7 @@
 Rails.application.routes.draw do
-  root 'games#index'
+  devise_for :users,
+    :controllers => { :omniauth_callbacks => "omniauth_callbacks" }
+
+  root to: 'devise/sessions#new'
+  resources :programs
 end
