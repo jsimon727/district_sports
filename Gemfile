@@ -19,7 +19,7 @@ gem 'coffee-rails', '~> 4.0.0'
 gem 'pry'
 
 #calendar integration
-gem 'google_calendar'
+gem 'google-api-client', :require => 'google/api_client'
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
