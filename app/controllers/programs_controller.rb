@@ -18,14 +18,16 @@ class ProgramsController < ApplicationController
       end
     end
 
-    # games = fetch_games(programs)
+    games  = fetch_games(programs)
+    render locals: { games: games }
   end
 
   private
 
   def fetch_games(programs)
     games = []
-    programs.each do |program|
+    # TODO: Optimize and run through all programs
+    programs.take(2).each do |program|
       games << HTTParty.get("http://api.leagueapps.com/v1/sites/#{Api::LEAGUE_APPS_SITE_ID}/programs/#{program.program_id}/schedule?x-api-key=#{Api::LEAGUE_APPS_API}")
     end
 
