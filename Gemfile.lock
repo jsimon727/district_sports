@@ -135,6 +135,8 @@ GEM
       faraday (~> 0.9)
       jwt (~> 1.5)
       multi_json (~> 1.10)
+    simple_calendar (2.0.3)
+      rails (>= 3.0)
     slop (3.6.0)
     spring (1.5.0)
     sprockets (2.12.4)
@@ -172,6 +174,7 @@ DEPENDENCIES
   pry
   rails (= 4.1.8)
   sdoc (~> 0.4.0)
+  simple_calendar (~> 2.0)
   spring
   turbolinks
   uglifier (>= 1.3.0)

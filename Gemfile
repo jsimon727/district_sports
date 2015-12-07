@@ -19,6 +19,7 @@ gem 'pry'
 
 #calendar integration
 gem 'google-api-client', :require => 'google/api_client'
+gem "simple_calendar", "~> 2.0"
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'

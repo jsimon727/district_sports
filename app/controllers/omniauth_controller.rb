@@ -51,7 +51,9 @@ class OmniauthController < ApplicationController
 
     google_calendar_api = google_api_client.discovered_api('calendar', 'v3')
 
-    @event =
+    games = Game.get_current_for(programs)
+
+    @events =
       {
         'summary' => 'Distrcit Sports Test API',
         'description' => 'District Sports Test',
@@ -80,6 +82,12 @@ class OmniauthController < ApplicationController
   end
 
   private
+
+  attr_reader :programs
+
+  def programs
+    @_programs ||= Program.get_current
+  end
 
   def client_id
     Rails.application.secrets.google_client_id
