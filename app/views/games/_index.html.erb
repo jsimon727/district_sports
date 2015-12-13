@@ -1,0 +1,18 @@
+<% require 'date' %>
+<% Date::ABBR_DAYNAMES.each do |day| %>
+  <h2>
+    <%= day %>
+  </h2>
+  <ul>
+    <% if games[day].present? %>
+      <% games[day].each do |game| %>
+        <li>
+          <%= game.location %>
+        </li>
+        <li>
+          <%= game.start_time.strftime("%b %d %H:%M") %>
+        </li>
+      <% end %>
+    <% end %>
+  </ul>
+<% end %>

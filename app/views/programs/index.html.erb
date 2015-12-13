@@ -1,0 +1,59 @@
+<header>
+
+  <div class="flex-container">
+      <div class="flex-item">
+        <%= image_tag("DistrictSports_Logo.svg", alt: "District Sports Logo") %>
+      </div> <!-- end flex-item -->
+
+      <div class="flex-item">
+        <label style="text-align:left;">Sort by</label>
+        <input type="radio" name="Day of the Week" id="DOTW"><label for="Day of the Week">Day of the Week</label>
+        <input type="radio" name="Location" id="Location"><label for="Location">Location</label>
+      </div> <!-- end flex-item -->
+  </div> <!-- end flex-container -->
+
+<hr>
+
+</header>
+
+
+<section class="flex-container-centered">
+  <div class="flex-item">
+    <h4 alt="Game Date Range">Game Date Range</h4>
+  </div>
+
+  <div class="flex-item">
+    <table class="table">
+        <thead>
+          <tr>
+            <th>Start:
+              <input type="text" value="" id="dpd1">
+            </th>
+
+            <th>End:
+              <input type="text"  value="" id="dpd2">
+            </th>
+          </tr>
+        </thead>
+    </table>
+  </div> <!-- end flex-item -->
+
+  <div class="flex-item">
+    <h4 alt="Game Location">Game Location</h4>
+  </div> <!-- end flex-item -->
+
+  <div class="flex-item">
+    <button class="button large">
+      Show
+    </button>
+    <button class="button large">
+      Export
+    </button>
+  </div> <!-- end flex-item -->
+</section><!-- end flex-container -->
+
+<div class="row">
+  <div class="large-8 columns">
+    <%= render partial: "games/index", locals: { games: games } %>
+  </div>
+</div>

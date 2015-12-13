@@ -51,7 +51,7 @@ class OmniauthController < ApplicationController
 
     google_calendar_api = google_api_client.discovered_api('calendar', 'v3')
 
-    @event =
+    @events =
       {
         'summary' => 'Distrcit Sports Test API',
         'description' => 'District Sports Test',

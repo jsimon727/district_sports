@@ -1,0 +1,119 @@
+$red: #E93A30;
+$grey: #999;
+
+.flex-container {
+  margin: 0px 55px;
+  list-style: none;
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-flow: row wrap;
+  justify-content: flex-start;
+  align-items: center;
+
+}
+
+.flex-container-centered {
+  padding: 0;
+  margin: 0px 25px;
+  list-style: none;
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  align-items: center;
+  -webkit-flex-flow: row wrap;
+  justify-content: space-around;
+
+}
+
+
+.flex-item {
+  max-width: 360px;
+  max-height: 360px;
+  margin-top: 20px;
+  padding: 10px;
+  text-align: center;
+}
+
+h1 {
+  text-align: center;
+  font-size: 2.8em;
+  font-weight: 300;
+
+}
+
+img {
+  width: 7%;
+  margin: 15px;
+  min-width: 100px;
+}
+
+.button {
+  background-color: $red;
+
+}
+
+.button:hover {
+    background-color: darken($red, 20%);
+  }
+
+hr {
+  background-color: $red;
+  height: 2px;
+  width: 100%;
+  margin-top: -10px;
+}
+
+
+input[type=radio]{
+  display:none;
+}
+
+label {
+    font-weight: 700;
+    font-size: 1.5em;
+}
+
+input[type=radio] + label {
+  display: inline-block;
+  width: 140px;
+  margin: 0 0 0 -5px;;
+  padding: 0;
+  height: 50px;
+  font-size: 1em;
+  line-height: 46px;
+  position: relative;
+  background: $grey;
+  color: #fff;
+  cursor: pointer;
+}
+
+input[type=radio] + label:hover {
+ background: darken($grey, 10%);
+}
+
+input[type=radio]:active + label {
+ background: $red;
+}
+
+input[type=radio]:checked + label {
+ background: $red;
+ color: #000;
+}
+
+input[type=radio]:checked + label {
+ background: $red;
+ color: #000;
+}
+
+input[type=radio]:focus + label {
+ background: lighten($red, 15%);
+ color: #000;
+}
+
+
+
