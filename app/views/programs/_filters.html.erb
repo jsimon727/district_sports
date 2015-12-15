@@ -1,0 +1,47 @@
+<div class="row">
+  <div class="large-4 columns">
+    <h5>
+      <strong>
+        Game Date Range:
+      </strong>
+    </h5>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Start:
+            <input type="text" value="" id="start_date">
+          </th>
+
+          <th>End:
+            <input type="text"  value="" id="end_date">
+          </th>
+        </tr>
+      </thead>
+    </table>
+  </div>
+  <div class="large-8 columns">
+    <h5>
+      <strong>
+        Game Day:
+      </strong>
+    </h5>
+    <% Date::ABBR_DAYNAMES.each do |day| %>
+      <%= check_box_tag(day, value = "day", checked = false) %>
+      <%= label_tag day, day %>
+    <% end %>
+
+    <div class="row">
+      <div class="large-12 column">
+        <h5>
+          <strong>
+            Game Location:
+          </strong>
+        </h5>
+        <%= select_tag "location", options_for_select(locations) %>
+      </div>
+    </div>
+
+    <%= submit_tag("Show", class: "button medium") %>
+  </div>
+</div>
+

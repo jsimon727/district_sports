@@ -4,8 +4,8 @@ class GameBuilder
   end
 
   def build_games
-    programs.take(4).each do |program|
-      response = HTTParty.get("http://api.leagueapps.com/v1/sites/#{Api::LEAGUE_APPS_SITE_ID}/programs/#{program.program_id}/schedule?x-api-key=#{Api::LEAGUE_APPS_API}")
+    programs.take(10).each do |program|
+      response = HTTParty.get("http://api.leagueapps.com/v1/sites/#{Api::LEAGUE_APPS_SITE_ID}/programs/#{program.program_id}/schedule?x-api-key=#{Api::LEAGUE_APPS_API}&state=LIVE")
       return unless response["games"].present?
       game_ids = response["games"].map { |game| game["gameId"] }
       @games = ::Game.where("game_id IN (?)", game_ids)
@@ -25,17 +25,16 @@ class GameBuilder
     @games
   end
 
-  def sorted_games
-    games ||= build_games
-
-    sorted_games = Hash.new
-    day_games = Array.new
-
-    games.map do |game|
-      sorted_games[game.start_time.strftime("%a")] = (day_games << game)
+  def build_games_for(location)
+    games = []
+    programs.take(10).each do |program|
+      response = HTTParty.get("http://api.leagueapps.com/v1/sites/#{Api::LEAGUE_APPS_SITE_ID}/programs/#{program.program_id}/schedule?x-api-key=#{Api::LEAGUE_APPS_API}&state=LIVE")
+      return unless response["games"].present?
+      games << response["games"].select { |game| game["locationName"] == location }
     end
 
-    sorted_games
+    game_ids = games.flatten.map { |game| game["gameId"] }
+    @games = ::Game.where("game_id IN (?)", game_ids)
   end
 
   private

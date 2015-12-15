@@ -4,6 +4,7 @@
     <%= day %>
   </h2>
   <ul>
+    <% return unless games %>
     <% if games[day].present? %>
       <% games[day].each do |game| %>
         <li>

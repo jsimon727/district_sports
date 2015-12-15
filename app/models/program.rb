@@ -10,9 +10,10 @@ class Program < ActiveRecord::Base
 
     programs = Program.where("program_id IN (?)", program_ids)
 
-    if program_ids.count > programs.count
+    not_persisted_program_ids ||= (program_ids - programs.map(&:program_id))
+    if not_persisted_program_ids.present?
       programs = []
-      response.each do |program|
+      response.select { |program| not_persisted_program_ids.include?(program["programId"]) }.each do |program|
         programs << Program.where(program_id: program["programId"]).first_or_create(name: program["name"],
                                                                         program_id: program["programId"],
                                                                         location: program["location"],
