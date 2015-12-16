@@ -3,38 +3,18 @@ class GameBuilder
     @programs = programs
   end
 
-  def build_games
-    programs.take(10).each do |program|
-      response = HTTParty.get("http://api.leagueapps.com/v1/sites/#{Api::LEAGUE_APPS_SITE_ID}/programs/#{program.program_id}/schedule?x-api-key=#{Api::LEAGUE_APPS_API}&state=LIVE")
-      return unless response["games"].present?
-      game_ids = response["games"].map { |game| game["gameId"] }
-      @games = ::Game.where("game_id IN (?)", game_ids)
-
-      if game_ids.count > @games.count
-        games = []
-        response["games"].each do |game|
-          games << ::Game.where(game_id: game["gameId"]).first_or_create( game_id: game["gameId"],
-                                                                          location: game["locationName"],
-                                                                          start_time: converted_start_time(game["startTime"]),
-                                                                          program_id: program.id
-                                                                        )
-        end
-      end
-    end
-
-    @games
-  end
-
-  def build_games_for(location)
+  def build_games_for(location, days)
     games = []
     programs.take(10).each do |program|
-      response = HTTParty.get("http://api.leagueapps.com/v1/sites/#{Api::LEAGUE_APPS_SITE_ID}/programs/#{program.program_id}/schedule?x-api-key=#{Api::LEAGUE_APPS_API}&state=LIVE")
+      response = HTTParty.get("http://api.leagueapps.com/v1/sites/#{Api::LEAGUE_APPS_SITE_ID}/programs/#{program["programId"]}/schedule?x-api-key=#{Api::LEAGUE_APPS_API}&state=LIVE")
+
       return unless response["games"].present?
-      games << response["games"].select { |game| game["locationName"] == location }
+      games << response["games"].select { |game| game["locationName"] == location } if location.present?
+      games << response["games"].select { |game| days.include?(converted_start_time(game["startTime"]).strftime("%a")) } if days.present?
+      games << response["games"] unless (location.present? || days.present?)
     end
 
-    game_ids = games.flatten.map { |game| game["gameId"] }
-    @games = ::Game.where("game_id IN (?)", game_ids)
+    games
   end
 
   private

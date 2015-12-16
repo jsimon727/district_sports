@@ -8,10 +8,10 @@
     <% if games[day].present? %>
       <% games[day].each do |game| %>
         <li>
-          <%= game.location %>
+          <%= game["locationName"] %>
         </li>
         <li>
-          <%= game.start_time.strftime("%b %d %H:%M") %>
+          <%= (Time.at(game["startTime"]/100).to_datetime).strftime("%b %d %H:%M") %>
         </li>
       <% end %>
     <% end %>

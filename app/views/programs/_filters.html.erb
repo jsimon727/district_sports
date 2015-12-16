@@ -26,7 +26,7 @@
       </strong>
     </h5>
     <% Date::ABBR_DAYNAMES.each do |day| %>
-      <%= check_box_tag(day, value = "day", checked = false) %>
+      <%= check_box_tag("days[]", value = day, checked = false) %>
       <%= label_tag day, day %>
     <% end %>
 
