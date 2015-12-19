@@ -9,11 +9,11 @@
       <thead>
         <tr>
           <th>Start:
-            <input type="text" value="" id="start_date">
+            <%= text_field_tag("dates[start_date]", params[:dates].try(:start_date), { id: "start_date" }) %>
           </th>
 
           <th>End:
-            <input type="text"  value="" id="end_date">
+            <%= text_field_tag("dates[end_date]", params[:dates].try(:end_date), { id: "end_date" }) %>
           </th>
         </tr>
       </thead>
@@ -26,7 +26,7 @@
       </strong>
     </h5>
     <% Date::ABBR_DAYNAMES.each do |day| %>
-      <%= check_box_tag("days[]", value = day, checked = false) %>
+      <%= check_box_tag("days[]", value = params[:day], checked = false) %>
       <%= label_tag day, day %>
     <% end %>
 
@@ -37,7 +37,7 @@
             Game Location:
           </strong>
         </h5>
-        <%= select_tag "location", options_for_select(locations) %>
+        <%= select_tag "location", options_for_select(locations), include_blank: true %>
       </div>
     </div>
 

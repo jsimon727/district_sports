@@ -19,7 +19,15 @@
 
 $(document).foundation();
 $(function() {
-  $("#start_date").datepicker();
-  $("#end_date").datepicker();
-});
+  $('#start_date').datepicker( {
+    onSelect: function(date) {
+      $(this).val(date)
+    }
+  });
 
+  $('#end_date').datepicker( {
+    onSelect: function(date) {
+      $(this).val(date)
+    }
+  });
+});

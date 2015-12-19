@@ -1,8 +1,21 @@
 class Program < ActiveRecord::Base
   LIVE_PROGRAMS_URL = "http://api.leagueapps.com/v1/sites/#{Api::LEAGUE_APPS_SITE_ID}/programs/current?x-api-key=#{Api::LEAGUE_APPS_API}&state=LIVE"
 
-  def self.build_live
+  def self.get_live
     HTTParty.get(LIVE_PROGRAMS_URL)
+  end
+
+  def self.get_for(dates)
+    if dates.present?
+      programs = []
+      response = HTTParty.get(LIVE_PROGRAMS_URL)
+      response.select do |program|
+        start_date = ::DateHelper.convert_date_to_datetime(dates[:start_date])
+        end_date = ::DateHelper.convert_date_to_datetime(dates[:end_date])
+        programs << program if ::DateHelper.convert_time_to_date(program["startTime"]).between?(start_date, end_date)
+      end
+      programs
+    end
   end
 
   def self.build_for_days(days)
