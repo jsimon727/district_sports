@@ -6,9 +6,7 @@
       </div> <!-- end flex-item -->
 
       <div class="flex-item">
-        <label style="text-align:left;">Sort by</label>
-        <input type="radio" name="Day of the Week" id="DOTW"><label for="Day of the Week">Day of the Week</label>
-        <input type="radio" name="Location" id="Location"><label for="Location">Location</label>
+        <%= link_to "Export to Calendar", auth_google_oauth2_redirect_path(nil, params), class: 'button' %>
       </div> <!-- end flex-item -->
   </div> <!-- end flex-container -->
 

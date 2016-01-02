@@ -6,16 +6,14 @@ class Program < ActiveRecord::Base
   end
 
   def self.get_for(dates)
-    if dates.present?
-      programs = []
-      response = HTTParty.get(LIVE_PROGRAMS_URL)
-      response.select do |program|
-        start_date = ::DateHelper.convert_date_to_datetime(dates[:start_date])
-        end_date = ::DateHelper.convert_date_to_datetime(dates[:end_date])
-        programs << program if ::DateHelper.convert_time_to_date(program["startTime"]).between?(start_date, end_date)
-      end
-      programs
+    programs = []
+    response = HTTParty.get(LIVE_PROGRAMS_URL)
+    response.select do |program|
+      start_date = ::DateHelper.convert_date_to_datetime(dates[:start_date])
+      end_date = ::DateHelper.convert_date_to_datetime(dates[:end_date])
+      programs << program if ::DateHelper.convert_time_to_date(program["startTime"]).between?(start_date, end_date)
     end
+    programs
   end
 
   def self.build_for_days(days)
