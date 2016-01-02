@@ -1,8 +1,8 @@
 class ProgramsController < ApplicationController
 
   def index
-    if params[:date]
-      programs = Program.get_for(params[:date])
+    if params[:dates] && params[:dates][:start_date] && params[:dates][:end_date]
+      programs = Program.get_for(params[:dates])
     else
       programs ||= Program.get_live
     end
@@ -12,7 +12,7 @@ class ProgramsController < ApplicationController
     sorted_games = sort_by_day(filtered_games)
     location_names = Program.get_live.map { |program| program["location"] }
 
-    render locals: { games: sorted_games, locations: (location_names).compact.uniq, programs: programs, current_week: current_week  }
+    render locals: { games: sorted_games, locations: (location_names).compact.uniq, programs: programs }
   end
 
   private

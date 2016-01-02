@@ -10,7 +10,7 @@ class OmniauthController < ApplicationController
       authorization_uri: 'https://accounts.google.com/o/oauth2/auth',
       scope: 'https://www.googleapis.com/auth/calendar',
       redirect_uri: "http://localhost:3000/auth/google_oauth2/callback"
-      })
+    })
 
     authorization_uri = google_api_client.authorization.authorization_uri
     redirect_to authorization_uri.to_s
@@ -30,10 +30,11 @@ class OmniauthController < ApplicationController
       scope: 'https://www.googleapis.com/auth/calendar',
       redirect_uri: "http://localhost:3000/auth/google_oauth2/callback",
       code: params[:code]
-      })
+    })
 
     response = google_api_client.authorization.fetch_access_token!
     session[:access_token] = response['access_token']
+
     redirect_to auth_google_oauth2_calendar_path
   end
 
@@ -50,33 +51,16 @@ class OmniauthController < ApplicationController
     })
 
     google_calendar_api = google_api_client.discovered_api('calendar', 'v3')
-
-    @events =
-      {
-        'summary' => 'Distrcit Sports Test API',
-        'description' => 'District Sports Test',
-        'location' => 'Somewhere',
-        'iCalUID' => SecureRandom.uuid,
-        'start' => {
-          'dateTime' => '2015-12-04T10:00:00.000-07:00'
-        },
-        'end' => {
-          'dateTime' => '2015-12-04T11:00:00.000-07:00'
-        }
-      }
-
-    result = google_api_client.execute(:api_method => google_calendar_api.events.import,
-                            :parameters => {'calendarId' => 'primary'},
-                            :body => JSON.dump(@event),
-                            :headers => {'Content-Type' => 'application/json'})
-
-    if result.response.status == 200
-      flash[:success] = "All events have been successfully exported"
-    else
-      flash[:error] = "Something went wrong"
+    api_method = google_calendar_api.events.import
+    programs ||= Program.get_live
+    events = GameBuilder.new(programs).build_games_for_export
+    events.each do |event|
+      google_api_client.execute(:api_method => api_method,
+                              :parameters => {'calendarId' => 'primary'},
+                              :body => JSON.dump(event),
+                              :headers => {'Content-Type' => 'application/json'})
     end
-
-    head :ok
+    redirect_to root_path
   end
 
   private
