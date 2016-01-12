@@ -5,6 +5,7 @@ class GameBuilder
 
   def build_games_for(location, days, dates)
     games = []
+    return unless programs.present?
     programs.select { |program| program["state"] == "LIVE"}.last(10).each do |program|
       response = HTTParty.get("http://api.leagueapps.com/v1/sites/#{Api::LEAGUE_APPS_SITE_ID}/programs/#{program["programId"]}/schedule?x-api-key=#{Api::LEAGUE_APPS_API}&state=LIVE")
 
@@ -18,14 +19,27 @@ class GameBuilder
     games
   end
 
+  def build_games_between(bow, eow)
+    games = []
+    return unless programs.present?
+
+    programs.last(20).each do |program|
+      response = HTTParty.get("http://api.leagueapps.com/v1/sites/#{Api::LEAGUE_APPS_SITE_ID}/programs/#{program["programId"]}/schedule?x-api-key=#{Api::LEAGUE_APPS_API}&state=LIVE")
+      next unless response["games"].present?
+      games << response["games"].select { |game| ::DateHelper.convert_time_to_date(game["startTime"]).between?(bow, eow) }
+    end
+
+    games
+  end
+
   def build_games_for_export
     games = []
-    programs.select { |program| program["state"] == "LIVE"}.last(10).each do |program|
+    programs.select { |program| program["state"] == "LIVE"}.reject { |program| program["name"].split(" - ").first == "Free Agent Pool" }.last(20).each do |program|
       response = HTTParty.get("http://api.leagueapps.com/v1/sites/#{Api::LEAGUE_APPS_SITE_ID}/programs/#{program["programId"]}/schedule?x-api-key=#{Api::LEAGUE_APPS_API}&state=LIVE")
       blk = lambda {|h,k| h[k] = Hash.new(&blk)}
 
       next unless response["games"].present?
-      response["games"].select { |game| ::DateHelper.convert_time_to_date(game["startTime"]) >= Time.now }.last(10).each do |game_response|
+      response["games"].last(10).each do |game_response|
         next if game_time_present?(game_response, games)
         game = Hash.new(&blk)
         game["summary"] = game_response["locationName"]
@@ -51,8 +65,6 @@ class GameBuilder
 
   def end_date_time(program, start_time)
     case program["name"].split(" -").first
-    when "7v7"
-      ::DateHelper.convert_time_to_date(start_time) + 1.hours
     when "11v11"
       ::DateHelper.convert_time_to_date(start_time) + 1.hours + 20.minutes
     else

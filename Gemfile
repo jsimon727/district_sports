@@ -20,6 +20,8 @@ gem 'pry'
 #calendar integration
 gem 'google-api-client', :require => 'google/api_client'
 
+gem "font-awesome-rails"
+
 # Use jquery as the JavaScript library
 gem 'jquery-ui-rails', '~> 5.0', '>= 5.0.5'
 gem 'jquery-rails'

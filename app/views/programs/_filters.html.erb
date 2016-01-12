@@ -20,16 +20,6 @@
     </table>
   </div>
   <div class="large-8 columns">
-    <h5>
-      <strong>
-        Game Day:
-      </strong>
-    </h5>
-    <% Date::ABBR_DAYNAMES.each do |day| %>
-      <%= check_box_tag("days[]", value = params[:day], checked = false) %>
-      <%= label_tag day, day %>
-    <% end %>
-
     <div class="row">
       <div class="large-12 column">
         <h5>

@@ -1,19 +1,39 @@
 <% require 'date' %>
-<% Date::ABBR_DAYNAMES.each do |day| %>
-  <h2>
-    <%= day %>
-  </h2>
-  <ul>
-    <% return unless games %>
-    <% if games[day].present? %>
-      <% games[day].each do |game| %>
-        <li>
-          <%= game["locationName"] %>
-        </li>
-        <li>
-          <%= (Time.at(game["startTime"]/100).to_datetime).strftime("%b %d %H:%M") %>
-        </li>
-      <% end %>
-    <% end %>
+
+
+<div id="games">
+  <ul id="controls" class="button-group round" data-refresh-container="#games" data-url="<%= programs_path %>">
+    <li>
+      <button id="previous"><span class="fa fa-arrow-left fa-5"></span>    Previous</button>
+    </li>
+    <li>
+      <button disabled="true">
+      <span id="bow"><%= bow.strftime("%b %d, %Y")%> - </span>
+      <span id="eow"><%= eow.strftime("%b %d, %Y") %></span>
+      </button>
+    </li>
+    <li>
+      <button id="next">Next    <span class="fa fa-arrow-right fa-5"></span></button>
+    </li>
   </ul>
-<% end %>
+
+
+  <% Date::ABBR_DAYNAMES.each do |day| %>
+    <h2>
+      <%= day %>
+    </h2>
+    <ul>
+      <% return unless games %>
+      <% if games[day].present? %>
+        <% games[day].each do |game| %>
+          <li>
+            <%= game["locationName"] %>
+          </li>
+          <li>
+            <%= ::DateHelper.convert_time_to_date(game["startTime"]).strftime("%b %d %I:%M %P") %>
+          </li>
+        <% end %>
+      <% end %>
+    </ul>
+  <% end %>
+</div>

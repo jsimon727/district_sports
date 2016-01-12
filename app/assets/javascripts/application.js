@@ -30,4 +30,22 @@ $(function() {
       $(this).val(date)
     }
   });
+
+  $(function() {
+    $("#next").on("click", function() {
+      bow = $("#bow").text();
+      eow = $("#eow").text();
+      week_dates = { next: true, bow: bow, eow: eow }
+
+      debugger;
+      $.ajax({
+        method: 'GET',
+        url: $("#controls").data("url"),
+        data: { week_dates: week_dates },
+        success: function(data) {
+          $($("#controls").data("refresh-container")).html(data);
+        }
+      });
+    });
+  });
 });
