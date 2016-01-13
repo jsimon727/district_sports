@@ -1,5 +1,6 @@
 class OmniauthController < ApplicationController
   def redirect
+    puts "redirect_uri: 'http://#{Rails.application.secrets.redirect_uri_hostname}/auth/google_oauth2/callback'"
     google_api_client = Google::APIClient.new({
       application_name: 'District Sports',
       application_version: '1.0.0'

@@ -18,6 +18,7 @@
 //= require foundation
 
 $(document).foundation();
+
 $(function() {
   $('#start_date').datepicker( {
     onSelect: function(date) {
@@ -30,22 +31,40 @@ $(function() {
       $(this).val(date)
     }
   });
+});
 
-  $(function() {
-    $("#next").on("click", function() {
-      bow = $("#bow").text();
-      eow = $("#eow").text();
-      week_dates = { next: true, bow: bow, eow: eow }
+$(document).ready(function() {
+  $(document).on("click", "#next", function() {
+    $("#loading").show();
+    bow = $("#bow").text();
+    eow = $("#eow").text();
+    week_dates = { next: true, bow: bow, eow: eow }
 
-      debugger;
-      $.ajax({
-        method: 'GET',
-        url: $("#controls").data("url"),
-        data: { week_dates: week_dates },
-        success: function(data) {
-          $($("#controls").data("refresh-container")).html(data);
-        }
-      });
+    $.ajax({
+      method: 'GET',
+      url: $("#controls").data("url"),
+      data: { week_dates: week_dates },
+      success: function(data) {
+        $($("#controls").data("refresh-container")).html(data);
+        $("#loading").hide();
+      }
+    });
+  });
+
+  $(document).on("click", "#previous", function() {
+    $("#loading").show();
+    bow = $("#bow").text();
+    eow = $("#eow").text();
+    week_dates = { next: false, bow: bow, eow: eow }
+
+    $.ajax({
+      method: 'GET',
+      url: $("#controls").data("url"),
+      data: { week_dates: week_dates },
+      success: function(data) {
+        $($("#controls").data("refresh-container")).html(data);
+        $("#loading").hide();
+      }
     });
   });
 });

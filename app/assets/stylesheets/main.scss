@@ -45,6 +45,29 @@ h1 {
 
 }
 
+ul#controls{
+  button{
+    border-width: 0px;
+  }
+
+}
+
+ul.list-unstyled {
+  li {
+    list-style: none;
+  }
+}
+
+
+#loading {
+  display: none;
+  margin-top: 5px;
+  z-index: 1000;
+  width: 200;
+  font-weight: bold;
+  font-size: 1em;
+}
+
 img {
   width: 7%;
   margin: 15px;

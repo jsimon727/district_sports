@@ -8,7 +8,8 @@
     </li>
     <li>
       <button disabled="true">
-      <span id="bow"><%= bow.strftime("%b %d, %Y")%> - </span>
+      <span id="bow"><%= bow.strftime("%b %d, %Y")%></span>
+      <span> - </span>
       <span id="eow"><%= eow.strftime("%b %d, %Y") %></span>
       </button>
     </li>
@@ -17,23 +18,23 @@
     </li>
   </ul>
 
+  <div id="loading">Loading ...</div>
 
-  <% Date::ABBR_DAYNAMES.each do |day| %>
-    <h2>
-      <%= day %>
-    </h2>
-    <ul>
-      <% return unless games %>
-      <% if games[day].present? %>
-        <% games[day].each do |game| %>
-          <li>
-            <%= game["locationName"] %>
-          </li>
-          <li>
-            <%= ::DateHelper.convert_time_to_date(game["startTime"]).strftime("%b %d %I:%M %P") %>
-          </li>
+  <div>
+    <% Date::ABBR_DAYNAMES.each do |day| %>
+      <h2>
+        <%= day %>
+      </h2>
+      <ul class="list-unstyled">
+        <% return unless games %>
+        <% if games[day].present? %>
+          <% games[day].each do |game| %>
+            <li>
+              <%= game["locationName"] %><span> - <%= ::DateHelper.convert_time_to_date(game["startTime"]).strftime("%I:%M %P") %></span>
+            </li>
+          <% end %>
         <% end %>
-      <% end %>
-    </ul>
-  <% end %>
+      </ul>
+    <% end %>
+  </div>
 </div>

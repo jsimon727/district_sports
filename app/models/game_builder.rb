@@ -26,7 +26,7 @@ class GameBuilder
     programs.last(20).each do |program|
       response = HTTParty.get("http://api.leagueapps.com/v1/sites/#{Api::LEAGUE_APPS_SITE_ID}/programs/#{program["programId"]}/schedule?x-api-key=#{Api::LEAGUE_APPS_API}&state=LIVE")
       next unless response["games"].present?
-      games << response["games"].select { |game| ::DateHelper.convert_time_to_date(game["startTime"]).between?(bow, eow) }
+      games << response["games"].select { |game| ::DateHelper.convert_time_to_date(game["startTime"]).between?(bow, eow) && !game_time_present?(game, games.flatten) }
     end
 
     games
@@ -40,7 +40,7 @@ class GameBuilder
 
       next unless response["games"].present?
       response["games"].last(10).each do |game_response|
-        next if game_time_present?(game_response, games)
+        next if event_game_time_present?(game_response, games)
         game = Hash.new(&blk)
         game["summary"] = game_response["locationName"]
         game["description"] = game_response["locationName"]
@@ -59,8 +59,12 @@ class GameBuilder
 
   attr_reader :programs
 
-  def game_time_present?(game_response, games)
+  def event_game_time_present?(game_response, games)
     games.map { |game| game["start"]["dateTime"] }.include?(::DateHelper.convert_time_to_date(game_response["startTime"])) && games.map { |game| game["location"] }.include?(game_response["locationName"])
+  end
+
+  def game_time_present?(game_response, games)
+    games.map { |game| game["startTime"] }.include?(game_response["startTime"]) && games.map { |game| game["locationName"] }.include?(game_response["locationName"])
   end
 
   def end_date_time(program, start_time)
