@@ -9,7 +9,7 @@ class OmniauthController < ApplicationController
       client_secret: client_secret,
       authorization_uri: 'https://accounts.google.com/o/oauth2/auth',
       scope: 'https://www.googleapis.com/auth/calendar',
-      redirect_uri: "http://localhost:3000/auth/google_oauth2/callback"
+      redirect_uri: "http://#{Rails.application.secrets.redirect_uri_hostname}/auth/google_oauth2/callback"
     })
 
     authorization_uri = google_api_client.authorization.authorization_uri
@@ -28,7 +28,7 @@ class OmniauthController < ApplicationController
       grant_type: 'authorization_code',
       token_credential_uri: 'https://accounts.google.com/o/oauth2/token',
       scope: 'https://www.googleapis.com/auth/calendar',
-      redirect_uri: "http://localhost:3000/auth/google_oauth2/callback",
+      redirect_uri: "http://#{Rails.application.secrets.redirect_uri_hostname}/auth/google_oauth2/callback",
       code: params[:code]
     })
 
