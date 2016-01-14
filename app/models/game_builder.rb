@@ -34,12 +34,12 @@ class GameBuilder
 
   def build_games_for_export
     games = []
-    programs.select { |program| program["state"] == "LIVE"}.reject { |program| program["name"].split(" - ").first == "Free Agent Pool" }.last(20).each do |program|
+    programs.select { |program| program["state"] == "LIVE"}.reject { |program| program["name"].split(" - ").first == "Free Agent Pool" }.each do |program|
       response = HTTParty.get("http://api.leagueapps.com/v1/sites/#{Api::LEAGUE_APPS_SITE_ID}/programs/#{program["programId"]}/schedule?x-api-key=#{Api::LEAGUE_APPS_API}&state=LIVE")
       blk = lambda {|h,k| h[k] = Hash.new(&blk)}
 
       next unless response["games"].present?
-      response["games"].last(10).each do |game_response|
+      response["games"].each do |game_response|
         next if event_game_time_present?(game_response, games)
         game = Hash.new(&blk)
         game["summary"] = game_response["locationName"]
