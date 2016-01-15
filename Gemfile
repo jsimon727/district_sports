@@ -22,7 +22,7 @@ gem 'google-api-client', :require => 'google/api_client'
 
 gem "font-awesome-rails"
 
-gem 'resque', :require => "resque/server"
+gem 'resque', "~> 1.22.0", :require => "resque/server"
 
 # Use jquery as the JavaScript library
 gem 'jquery-ui-rails', '~> 5.0', '>= 5.0.5'
