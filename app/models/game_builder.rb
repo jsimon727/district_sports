@@ -40,12 +40,11 @@ class GameBuilder
 
       next unless response["games"].present?
       response["games"].each do |game_response|
-        next if event_game_time_present?(game_response, games)
         game = Hash.new(&blk)
         game["summary"] = game_response["locationName"]
-        game["description"] = game_response["locationName"]
+        game["description"] = "#{program["name"]} - #{game_response["team1"]} v. #{game_response["team2"]}"
         game["location"] = game_response["locationName"]
-        game["iCalUID"] = "#{game_response["startTime"]}_#{game_response["locationName"]}"
+        game["iCalUID"] = game_response["gameId"]
         game["start"]["dateTime"] = ::DateHelper.convert_time_to_date(game_response["startTime"])
         game["end"]["dateTime"] = end_date_time(program, game_response["startTime"])
         games << game
