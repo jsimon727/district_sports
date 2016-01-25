@@ -22,12 +22,29 @@ class GameBuilder
   def build_games_between(bow, eow)
     games = []
     return unless programs.present?
-
-    programs.last(20).each do |program|
+    programs.select { |program| program["state"] == "LIVE"}.reject { |program| program["name"].split(" - ").first == "Free Agent Pool" }.each do |program|
       response = HTTParty.get("http://api.leagueapps.com/v1/sites/#{Api::LEAGUE_APPS_SITE_ID}/programs/#{program["programId"]}/schedule?x-api-key=#{Api::LEAGUE_APPS_API}&state=LIVE")
+      blk = lambda {|h,k| h[k] = Hash.new(&blk)}
+
       next unless response["games"].present?
-      games << response["games"].select { |game| ::DateHelper.convert_time_to_date(game["startTime"]).between?(bow, eow) && !game_time_present?(game, games.flatten) }
+      response["games"].select { |game| ::DateHelper.convert_time_to_date(game["startTime"]).between?(bow, eow)}.each do |game_response|
+        game = Hash.new(&blk)
+        game["team1"] = game_response["team1"]
+        game["team2"] = game_response["team2"]
+        game["locationName"] = game_response["locationName"]
+        game["program"] = game_response["program"]
+        game["gameId"] = game_response["gameId"]
+        game["startTime"] = ::DateHelper.convert_time_to_date(game_response["startTime"])
+        game["endTime"] = end_date_time(program, game_response["startTime"])
+        games << game
+      end
     end
+    # games
+    # programs.last(20).each do |program|
+      # response = HTTParty.get("http://api.leagueapps.com/v1/sites/#{Api::LEAGUE_APPS_SITE_ID}/programs/#{program["programId"]}/schedule?x-api-key=#{Api::LEAGUE_APPS_API}&state=LIVE")
+      # next unless response["games"].present?
+      # games << response["games"].select { |game| ::DateHelper.convert_time_to_date(game["startTime"]).between?(bow, eow) && !game_time_present?(game, games.flatten) }
+    # end
 
     games
   end
@@ -57,6 +74,10 @@ class GameBuilder
   private
 
   attr_reader :programs
+
+  def event_game_id_present?(game_response, games)
+    games.map { |game| game["iCalUID"] }.include?(game_response["gameId"])
+  end
 
   def event_game_time_present?(game_response, games)
     games.map { |game| game["start"]["dateTime"] }.include?(::DateHelper.convert_time_to_date(game_response["startTime"])) && games.map { |game| game["location"] }.include?(game_response["locationName"])

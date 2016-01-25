@@ -1,19 +1,24 @@
 class ProgramsController < ApplicationController
 
   def index
-    if params[:dates].present? && params[:dates][:start_date].present? && params[:dates][:end_date].present?
-      programs = Program.get_for(params[:dates])
-    else
-      programs ||= Program.get_live
-    end
+    # if params[:dates].present? && params[:dates][:start_date].present? && params[:dates][:end_date].present?
+      # programs = Program.get_for(params[:dates])
+    # else
+      # programs ||= Program.get_live
+    # end
 
+    programs ||= Program.get_live
     bow = requested_datetime.beginning_of_week
     eow = requested_datetime.end_of_week
 
     # filtered_games = GameBuilder.new(programs).build_games_for(params[:location], params[:days], params[:dates])
-    filtered_games = GameBuilder.new(programs).build_games_between(bow, eow)
 
-    sorted_games = group_by_day(filtered_games)
+    filtered_games = GameBuilder.new(programs).build_games_between(bow, eow)
+    sorted_games = filtered_games.group_by { |game| game["startTime"].strftime("%a") }
+
+    # sorted_games = ::Resque.enqueue(::GameIndexWorker, bow, eow)
+
+    # sorted_games = group_by_day(filtered_games)
     location_names = Program.get_live.map { |program| program["location"] }
 
     if request.xhr?
@@ -26,10 +31,10 @@ class ProgramsController < ApplicationController
 
   private
 
-  def group_by_day(filtered_games)
-    return unless filtered_games
-    filtered_games.flatten.group_by { |game| ::DateHelper.convert_time_to_date(game["startTime"]).strftime("%a") }
-  end
+  # def group_by_day(filtered_games)
+    # return unless filtered_games
+    # filtered_games.group_by { |game| game["startTime"].strftime("%a") }
+  # end
 
   def requested_datetime
     if params[:week_dates].present?

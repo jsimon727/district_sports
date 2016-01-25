@@ -30,7 +30,7 @@
         <% if games[day].present? %>
           <% games[day].each do |game| %>
             <li>
-              <%= game["locationName"] %><span> - <%= ::DateHelper.convert_time_to_date(game["startTime"]).strftime("%I:%M %P") %></span>
+              <%= game["locationName"] %><span> - <%= game["startTime"].strftime("%I:%M %P") %></span>
             </li>
           <% end %>
         <% end %>
