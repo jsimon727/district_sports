@@ -28,10 +28,24 @@
       <ul class="list-unstyled">
         <% return unless games %>
         <% if games[day].present? %>
-          <% games[day].each do |game| %>
-            <li>
-              <%= game["locationName"] %><span> - <%= game["startTime"].strftime("%I:%M %P") %></span>
-            </li>
+          <% games[day].sort_by { |game| [game["locationName"], game["startTime"]] }.each do |game| %>
+            <div class="row">
+              <div class="large-3 columns">
+                <li>
+                  <%= game["locationName"] %>
+                </li>
+              </div>
+              <div class="large-3 columns">
+                <li>
+                  <%= game["startTime"].strftime("%I:%M %P") %> - <%= game["endTime"].strftime("%I:%M %P") %>
+                </li>
+              </div>
+              <div class="large-6 columns">
+                <li>
+                  <%= game["team1"]%> v. <%= game["team2"] %>
+                </li>
+              </div>
+            </div>
           <% end %>
         <% end %>
       </ul>
