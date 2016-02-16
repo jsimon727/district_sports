@@ -1,40 +1,26 @@
 class ProgramsController < ApplicationController
 
   def index
-    # if params[:dates].present? && params[:dates][:start_date].present? && params[:dates][:end_date].present?
-      # programs = Program.get_for(params[:dates])
-    # else
-      # programs ||= Program.get_live
-    # end
-
     programs ||= Program.get_live
-    bow = requested_datetime.beginning_of_week
-    eow = requested_datetime.end_of_week
 
-    # filtered_games = GameBuilder.new(programs).build_games_for(params[:location], params[:days], params[:dates])
+    start_date = requested_datetime.beginning_of_week
+    end_date = requested_datetime.end_of_week
 
-    filtered_games = GameBuilder.new(programs).build_games_between(bow, eow)
-    sorted_games = filtered_games.group_by { |game| game["startTime"].strftime("%a") }
+    filtered_games = GameBuilder.new(programs).build_games_between(start_date, end_date)
+    sorted_games = filtered_games.group_by { |game| game["start"]["dateTime"].strftime("%a") }
+    week_view = true
 
-    # sorted_games = ::Resque.enqueue(::GameIndexWorker, bow, eow)
-
-    # sorted_games = group_by_day(filtered_games)
     location_names = Program.get_live.map { |program| program["location"] }
 
     if request.xhr?
-      render partial: "games/index", locals: { bow: bow, eow: eow, games: sorted_games }
+      render partial: "games/index", locals: { week_view: week_view, bow: start_date, eow: end_date, games: sorted_games }
     else
-      render "index", locals: { bow: bow, eow: eow, games: sorted_games, locations: (location_names).compact.uniq, programs: programs }
+      render "index", locals: { week_view: week_view, bow: start_date, eow: end_date, games: sorted_games, locations: (location_names).compact.uniq }
     end
   end
 
 
   private
-
-  # def group_by_day(filtered_games)
-    # return unless filtered_games
-    # filtered_games.group_by { |game| game["startTime"].strftime("%a") }
-  # end
 
   def requested_datetime
     if params[:week_dates].present?

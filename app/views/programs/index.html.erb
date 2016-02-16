@@ -1,26 +1,44 @@
 <header>
 
   <div class="flex-container">
-      <div class="flex-item">
-        <%= image_tag("DistrictSports_Logo.svg", alt: "District Sports Logo") %>
-      </div> <!-- end flex-item -->
+    <div class="flex-item">
+      <%= image_tag("DistrictSports_Logo.svg", alt: "District Sports Logo") %>
+    </div> <!-- end flex-item -->
 
-      <div class="flex-item">
-        <%= link_to "Export to Calendar", auth_google_oauth2_redirect_path, class: 'button' %>
-      </div> <!-- end flex-item -->
+    <%= form_tag(auth_google_oauth2_redirect_path, method: "get") do %>
+      <div class="row">
+        <div class="large-6 columns">
+          <h5>
+            <strong>
+              Game Date Range:
+            </strong>
+          </h5>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Start:
+                  <%= text_field_tag("dates[start_date]", ::ExportDate.last.start_time.strftime("%m/%d/%Y"), { id: "start_date" }) %>
+                </th>
+
+                <th>End:
+                  <%= text_field_tag("dates[end_date]", ::ExportDate.last.end_time.strftime("%m/%d/%Y"), { id: "end_date" }) %>
+                </th>
+              </tr>
+            </thead>
+          </table>
+        </div>
+        <div class="large-6 columns">
+          <%= submit_tag "Export to Calendar", class: 'button', style: 'margin-top: 73px' %>
+        </div>
+      </div>
+    <% end %>
   </div> <!-- end flex-container -->
-
 <hr>
 
 </header>
 
-
-<%# <%= form_tag(programs_path, method: "get") do %>
-  <%# <%= render partial: "filters", locals: { locations: locations, programs: programs } %>
-<%# <% end %>
-
 <div class="row">
   <div class="large-12 columns" id="games_index">
-    <%= render partial: "games/index", locals: { games: games, eow: eow, bow: bow } %>
+    <%= render partial: "games/index", locals: { games: games, eow: eow, bow: bow, week_view: week_view } %>
   </div>
 </div>
