@@ -1,3 +1,5 @@
+require "resolv-replace.rb"
+
 class OmniauthController < ApplicationController
   def redirect
     if params[:dates].present? && params[:dates][:start_date].present? && params[:dates][:end_date].present?
