@@ -19,51 +19,45 @@ class GameBuilder
     games
   end
 
-  def build_games_between(bow, eow)
+  def build_games_between(start_date, end_date)
     games = []
-    return unless programs.present?
     programs.select { |program| program["state"] == "LIVE"}.reject { |program| program["name"].split(" - ").first == "Free Agent Pool" }.each do |program|
-      response = HTTParty.get("http://api.leagueapps.com/v1/sites/#{Api::LEAGUE_APPS_SITE_ID}/programs/#{program["programId"]}/schedule?x-api-key=#{Api::LEAGUE_APPS_API}&state=LIVE")
+      response = HTTParty.get("http://api.leagueapps.com/v1/sites/#{Api::LEAGUE_APPS_SITE_ID}/programs/#{program["programId"]}/schedule?x-api-key=#{Api::LEAGUE_APPS_API}")
       blk = lambda {|h,k| h[k] = Hash.new(&blk)}
 
       next unless response["games"].present?
-      response["games"].select { |game| ::DateHelper.convert_time_to_date(game["startTime"]).between?(bow, eow)}.each do |game_response|
-        game = Hash.new(&blk)
-        game["team1"] = game_response["team1"]
-        game["team2"] = game_response["team2"]
-        game["locationName"] = game_response["locationName"]
-        game["program"] = game_response["program"]
-        game["gameId"] = game_response["gameId"]
-        game["startTime"] = ::DateHelper.convert_time_to_date(game_response["startTime"])
-        game["endTime"] = end_date_time(program, game_response["startTime"])
-        games << game
-      end
-    end
-    # games
-    # programs.last(20).each do |program|
-      # response = HTTParty.get("http://api.leagueapps.com/v1/sites/#{Api::LEAGUE_APPS_SITE_ID}/programs/#{program["programId"]}/schedule?x-api-key=#{Api::LEAGUE_APPS_API}&state=LIVE")
-      # next unless response["games"].present?
-      # games << response["games"].select { |game| ::DateHelper.convert_time_to_date(game["startTime"]).between?(bow, eow) && !game_time_present?(game, games.flatten) }
-    # end
-
-    games
-  end
-
-  def build_games_for_export
-    games = []
-    programs.select { |program| program["state"] == "LIVE"}.reject { |program| program["name"].split(" - ").first == "Free Agent Pool" }.each do |program|
-      response = HTTParty.get("http://api.leagueapps.com/v1/sites/#{Api::LEAGUE_APPS_SITE_ID}/programs/#{program["programId"]}/schedule?x-api-key=#{Api::LEAGUE_APPS_API}&state=LIVE")
-      blk = lambda {|h,k| h[k] = Hash.new(&blk)}
-
-      next unless response["games"].present?
-      response["games"].each do |game_response|
+      response["games"].select { |game| ::DateHelper.convert_time_to_date(game["startTime"]).between?(start_date, end_date) }.each do |game_response|
         game = Hash.new(&blk)
         game["summary"] = game_response["locationName"]
         game["description"] = "#{program["name"]} - #{game_response["team1"]} v. #{game_response["team2"]}"
         game["location"] = game_response["locationName"]
         game["iCalUID"] = game_response["gameId"]
+        game["colorId"] = find_color_id(game_response["locationName"])
         game["start"]["dateTime"] = ::DateHelper.convert_time_to_date(game_response["startTime"])
         game["end"]["dateTime"] = end_date_time(program, game_response["startTime"])
+        games << game
+      end
+    end
+
+    games
+  end
+
+  def build_games_for_export_between(start_date, end_date)
+    games = []
+    programs.select { |program| program["state"] == "LIVE"}.reject { |program| program["name"].split(" - ").first == "Free Agent Pool" }.each do |program|
+      response = HTTParty.get("http://api.leagueapps.com/v1/sites/#{Api::LEAGUE_APPS_SITE_ID}/programs/#{program["programId"]}/schedule?x-api-key=#{Api::LEAGUE_APPS_API}")
+      blk = lambda {|h,k| h[k] = Hash.new(&blk)}
+
+      next unless response["games"].present?
+      response["games"].select { |game| ::DateHelper.convert_time_to_date(game["startTime"]).between?(start_date, end_date) }.each do |game_response|
+        game = Hash.new(&blk)
+        game["summary"] = game_response["locationName"]
+        game["description"] = "#{program["name"]} - #{game_response["team1"]} v. #{game_response["team2"]}"
+        game["location"] = game_response["locationName"]
+        game["iCalUID"] = game_response["gameId"]
+        game["colorId"] = find_color_id(game_response["locationName"])
+        game["start"]["dateTime"] = ::DateHelper.convert_time_to_date(game_response["startTime"]).strftime("%FT%T%:z")
+        game["end"]["dateTime"] = end_date_time(program, game_response["startTime"]).strftime("%FT%T%:z")
         games << game
       end
     end
@@ -94,5 +88,20 @@ class GameBuilder
     else
       ::DateHelper.convert_time_to_date(start_time) + 1.hours
     end
+  end
+
+  def find_color_id(location)
+    colors = { "Cardozo High School" => 1,
+               "Stead Field" => 2,
+               "Bell Field" => 3,
+               "Thomson Elementary School" => 4,
+               "Bundy Field" => 5,
+               "Roosevelt High School" => 6,
+               "Maret School" => 1,
+               "Tubman Elementary" => 2,
+               "St. Alban's" => 3
+              }
+
+    colors.fetch(location, 4)
   end
 end

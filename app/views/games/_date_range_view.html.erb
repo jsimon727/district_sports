@@ -1,0 +1,23 @@
+<ul class="list-unstyled">
+  <% return unless games %>
+  <% games.each do |game| %>
+    <div class="row">
+      <div class="large-3 columns">
+        <li>
+          <%= game["locationName"] %>
+        </li>
+      </div>
+      <div class="large-4 columns">
+        <li>
+          <%= game["startTime"].strftime("%a %b %d") %>
+          <%= game["startTime"].strftime("%I:%M %P") %> - <%= game["endTime"].strftime("%I:%M %P") %>
+        </li>
+      </div>
+      <div class="large-5 columns">
+        <li>
+          <%= game["team1"]%> v. <%= game["team2"] %>
+        </li>
+      </div>
+    </div>
+  <% end %>
+</ul>

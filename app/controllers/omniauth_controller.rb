@@ -1,5 +1,15 @@
 class OmniauthController < ApplicationController
   def redirect
+    if params[:dates].present? && params[:dates][:start_date].present? && params[:dates][:end_date].present?
+      start_time = Date.strptime(params[:dates][:start_date], '%m/%d/%Y')
+      end_time = Date.strptime(params[:dates][:end_date], '%m/%d/%Y')
+    else
+      start_time = Date.today.beginning_of_week
+      end_time = Date.today.end_of_week
+    end
+
+    ::ExportDate.create(start_time: start_time, end_time: end_time)
+
     google_api_client = Google::APIClient.new({
       application_name: 'District Sports',
       application_version: '1.0.0'
