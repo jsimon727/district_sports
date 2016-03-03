@@ -1,5 +1,3 @@
-require "resolv-replace.rb"
-
 class GoogleCalendarApiWorker
   @queue = :google_calendar_api_queue
 

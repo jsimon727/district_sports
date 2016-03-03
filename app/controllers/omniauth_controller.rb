@@ -6,8 +6,8 @@ class OmniauthController < ApplicationController
       start_time = Date.strptime(params[:dates][:start_date], '%m/%d/%Y')
       end_time = Date.strptime(params[:dates][:end_date], '%m/%d/%Y')
     else
-      start_time = Date.today.beginning_of_week
-      end_time = Date.today.end_of_week
+      start_time = Date.today
+      end_time = Date.today + 60.days
     end
 
     ::ExportDate.create(start_time: start_time, end_time: end_time)
