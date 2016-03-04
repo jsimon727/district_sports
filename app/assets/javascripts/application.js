@@ -33,38 +33,3 @@ $(function() {
   });
 });
 
-$(document).ready(function() {
-  $(document).on("click", "#next", function() {
-    $("#loading").show();
-    bow = $("#bow").text();
-    eow = $("#eow").text();
-    week_dates = { next: true, bow: bow, eow: eow }
-
-    $.ajax({
-      method: 'GET',
-      url: $("#controls").data("url"),
-      data: { week_dates: week_dates },
-      success: function(data) {
-        $($("#controls").data("refresh-container")).html(data);
-        $("#loading").hide();
-      }
-    });
-  });
-
-  $(document).on("click", "#previous", function() {
-    $("#loading").show();
-    bow = $("#bow").text();
-    eow = $("#eow").text();
-    week_dates = { next: false, bow: bow, eow: eow }
-
-    $.ajax({
-      method: 'GET',
-      url: $("#controls").data("url"),
-      data: { week_dates: week_dates },
-      success: function(data) {
-        $($("#controls").data("refresh-container")).html(data);
-        $("#loading").hide();
-      }
-    });
-  });
-});

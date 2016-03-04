@@ -21,7 +21,7 @@ class GoogleCalendarApiWorker
                             :headers => {'Content-Type' => 'application/json'})
 
     programs ||= ::Program.get_live
-    events = ::GameBuilder.new(programs).build_games_for_export_between(ExportDate.last.start_time, ExportDate.last.end_time)
+    events = ::GameBuilder.new(programs).build_games_between(ExportDate.last.start_time, ExportDate.last.end_time)
     events.each do |event|
       google_api_client.execute(:api_method => google_calendar_api.events.import,
                               :parameters => {'calendarId' => 'primary'},

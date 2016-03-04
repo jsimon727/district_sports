@@ -1,28 +1,28 @@
 <% require 'date' %>
 
-
-<div id="games">
-  <ul id="controls" class="button-group round" data-refresh-container="#games" data-url="<%= programs_path %>">
-    <li>
-      <button id="previous"><span class="fa fa-arrow-left fa-5"></span>    Previous</button>
-    </li>
-    <li>
-      <button disabled="true">
-      <span id="bow"><%= bow.strftime("%b %d, %Y")%></span>
-      <span> - </span>
-      <span id="eow"><%= eow.strftime("%b %d, %Y") %></span>
-      </button>
-    </li>
-    <li>
-      <button id="next">Next    <span class="fa fa-arrow-right fa-5"></span></button>
-    </li>
-  </ul>
-
-  <div id="loading">Loading ...</div>
-
-  <% if week_view %>
-    <%= render partial: "games/week_view", locals: { games: games } %>
-  <% else %>
-    <%= render partial: "games/date_range_view", locals: { games: games } %>
+<ul class="list-unstyled">
+  <% games.values.each do |day| %>
+    <h4>
+      <%= day.first["start"]["dateTime"].to_datetime.strftime("%a, %B %e") %>
+    </h4>
+    <% day.each do |game| %>
+      <div class="row">
+        <div class="large-3 columns">
+          <li style="color: <%= Game::COLORS[game["colorId"]] %>;">
+            <%= game["location"] %>
+          </li>
+        </div>
+        <div class="large-2 columns">
+          <li>
+          <%= game["start"]["dateTime"].to_datetime.strftime("%l:%M%P") %>-<%= game["end"]["dateTime"].to_datetime.strftime("%l:%M%P") %>
+          </li>
+        </div>
+        <div class="large-7 columns">
+          <li>
+            <%= game["description"] %>
+          </li>
+        </div>
+      </div>
+    <% end %>
   <% end %>
-</div>
+</ul>
