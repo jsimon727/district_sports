@@ -24,13 +24,10 @@
             </tr>
           </thead>
         </table>
-        <%= submit_tag "Show", class: 'button float-right' %>
-      <% end %>
-    </div>
-
-    <div class="flex-item" style="margin-top: 35px;">
-      <%= form_tag(calendars_path) do %>
-        <%= submit_tag "Export to Calendar", class: 'button' %>
+        <div class = "stacked-for-medium button-group">
+          <%= submit_tag "Show", class: 'button' %>
+          <%= link_to "Export to Calendar", calendars_path, class: 'button' %>
+        </div>
       <% end %>
     </div>
   </div> <!-- end flex-container -->
