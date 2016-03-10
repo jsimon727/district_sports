@@ -26,7 +26,7 @@ class AutomaticExportWorker
                                                 :parameters => {'calendarId' => 'primary'},
                                                 :headers => {'Content-Type' => 'application/json'})
 
-    event_ids = JSON.parse(existing_events.body)["items"].select { |game| game["start"]["dateTime"].to_datetime.between?(Date.today + 1.days, Date.today + 3.months) }.map { |event| event["id"] }
+    event_ids = JSON.parse(existing_events.body)["items"].select { |game| (game["start"]["dateTime"].to_datetime).between?(Date.today, Date.today + 3.months) }.map { |event| event["id"] }
 
     event_ids.each do |id|
       google_api_client.execute(:api_method => google_calendar_api.events.delete,
