@@ -24,8 +24,8 @@ class AutomaticExportWorker
 
     existing_events = google_api_client.execute(:api_method => google_calendar_api.events.list,
                                                 :parameters => {'calendarId' => 'primary',
-                                                                'timeMax' => (Date.today + 2.months).rfc3339,
-                                                                'timeMin'=> (Date.today - 2.months).rfc3339,
+                                                                'timeMax' => (Date.today + 1.months).rfc3339,
+                                                                'timeMin'=> (Date.today - 1.months).rfc3339,
                                                                 'maxResults' => 2500 },
                                                 :headers => {'Content-Type' => 'application/json'})
 
@@ -40,7 +40,7 @@ class AutomaticExportWorker
     end
 
     programs ||= ::Program.get_live
-    events = ::GameBuilder.new(programs).build_games_between(Date.today - 2.months, Date.today + 2.months)
+    events = ::GameBuilder.new(programs).build_games_between(Date.today - 1.months, Date.today + 1.months)
     events.each do |event|
       google_api_client.execute(:api_method => google_calendar_api.events.import,
                                 :parameters => {'calendarId' => 'primary'},
