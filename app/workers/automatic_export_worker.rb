@@ -25,7 +25,8 @@ class AutomaticExportWorker
     existing_events = google_api_client.execute(:api_method => google_calendar_api.events.list,
                                                 :parameters => {'calendarId' => 'primary',
                                                                 'timeMax' => (Date.today + 2.months).rfc3339,
-                                                                'timeMin'=> (Date.today - 2.months).rfc3339 },
+                                                                'timeMin'=> (Date.today - 2.months).rfc3339,
+                                                                'maxResults' => 2500 },
                                                 :headers => {'Content-Type' => 'application/json'})
 
 
