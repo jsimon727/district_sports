@@ -31,11 +31,15 @@ class GameBuilder
   attr_reader :programs
 
   def end_date_time(program, start_time)
-    case program["name"].split(" -").first
-    when "11v11"
-      ::DateHelper.convert_time_to_date(start_time) + 1.hours + 20.minutes
+    if program["name"] == "11v11 - 2016 Fall Sunday - Men's D1"
+      ::DateHelper.convert_time_to_date(start_time) + 1.hours + 45.minutes
     else
-      ::DateHelper.convert_time_to_date(start_time) + 1.hours
+      case program["name"].split(" -").first
+      when "11v11"
+        ::DateHelper.convert_time_to_date(start_time) + 1.hours + 20.minutes
+      else
+        ::DateHelper.convert_time_to_date(start_time) + 1.hours
+      end
     end
   end
 
